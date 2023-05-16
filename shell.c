@@ -32,36 +32,35 @@ int main(void)
 				break;
 			}
 		}
-	}
-	char *token;
-	char *args[MAX_COMMAND_LENGTH];
-	int args_count = 0;
+		char *token;
+		char *args[MAX_COMMAND_LENGTH];
+		int args_count = 0;
 
-	token = strtok(line, " ");
-	while (token != NULL)
-	{
-		args[args_count] = token;
-		args_count++;
-		token = strtok(NULL, " ");
-	}
-	args[args_count] = NULL;
+		token = strtok(line, " ");
+		while (token != NULL)
+		{
+			args[args_count] = token;
+			args_count++;
+			token = strtok(NULL, " ");
+		}
+		args[args_count] = NULL;
 
-	child_pid = fork();
-	if (child_pid == -1)
-	{
-		perror("Error in fork");
-		return(1);
-	}
-	if (child_pid == 0)
-	{
-		execve(args[0], args, NULL);
-		perror("Execve");
-		return(1);
-	}
-	else
-	{
-		wait(&status);
-		printf("Parent");
+		child_pid = fork();
+		if (child_pid == -1)
+		{
+			perror("Error in fork");
+			return(1);
+		}
+		if (child_pid == 0)
+		{
+			execve(args[0], args, NULL);
+			perror("Execve");
+			return(1);
+		}
+		else
+		{
+			wait(&status);
+		}
 	}
 	free(line);
 	return (0);
