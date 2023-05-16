@@ -14,15 +14,26 @@ int main(void)
 	ssize_t read;
 	pid_t child_pid;
 	int status;
+	const char prompt[] = "#cisfun$ ";
+	char *token;
+	char *args[MAX_COMMAND_LENGTH];
+	int args_count = 0;
 
 	while (1)
 	{
-		printf("$");
+		write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 		read = getline(&line, &len, stdin);
 		if (read == -1)
 		{
-			perror("read error");
-			return(1);
+			if (feof(stdin))
+			{
+				break;
+			}
+			else
+			{
+				perror("read error");
+				exit(EXIT_FAILURE);
+			}
 		}
 		if (line[read - 1] == '\n')
 		{
@@ -31,11 +42,11 @@ int main(void)
 			{
 				break;
 			}
+			else if (strcmp(line, "") == 0)
+			{
+				continue;
+			}
 		}
-		char *token;
-		char *args[MAX_COMMAND_LENGTH];
-		int args_count = 0;
-
 		token = strtok(line, " ");
 		while (token != NULL)
 		{
@@ -54,7 +65,7 @@ int main(void)
 		if (child_pid == 0)
 		{
 			execve(args[0], args, NULL);
-			perror("Execve");
+			perror("./hsh");
 			return(1);
 		}
 		else
