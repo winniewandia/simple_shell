@@ -11,9 +11,10 @@
 /**
  * shell - simple UNIX command interpretor
  * @prog_name: Name of the program
+ * @input_file: Input file to be read
  */
 
-void shell(char *prog_name)
+void shell(char *prog_name, FILE *input_file)
 {
 	char *token, *args[MAX_COMMAND_LENGTH], *line = NULL;
 	size_t len = 0;
@@ -24,9 +25,10 @@ void shell(char *prog_name)
 	while (1)
 	{
 		printf("%s$ ", prog_name);
-		if ((read = getline(&line, &len, stdin)) == -1)
+		read = getline(&line, &len, input_file);
+		if (read == -1)
 		{
-			if (feof(stdin))
+			if (feof(input_file))
 			{
 				break;
 			}
@@ -48,7 +50,8 @@ void shell(char *prog_name)
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
-		if ((child_pid = fork()) == -1)
+		child_pid = fork();
+		if (child_pid == -1)
 		{
 			perror("fork");
 			exit(EXIT_FAILURE);
@@ -63,6 +66,10 @@ void shell(char *prog_name)
 		{
 			wait(&status);
 		}
+		if (input_file == stdin)
+		{
+			fflush(stdout);
+		}
 	}
 	free(line);
 }
@@ -75,11 +82,31 @@ void shell(char *prog_name)
  * Return: Always 0(success)
  */
 
-int main(int __attribute__ ((unused)) argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	char *program_name = basename(argv[0]);
+	char *prog_name = basename(argv[0]);
+	FILE *input_file;
 
-	shell(program_name);
+	if (argc == 1)
+	{
+		shell(prog_name, stdin);
+	}
+	else if (argc == 2)
+	{
+		input_file = fopen(argv[1], "r");
+		if (input_file == NULL)
+		{
+			perror("fopen");
+			exit(EXIT_FAILURE);
+		}
+		shell(prog_name, input_file);
+		fclose(input_file);
+	}
+	else
+	{
+		fprintf(stderr, "Usage: %s [file]\n", prog_name);
+		exit(EXIT_FAILURE);
+	}
 	return (0);
 }
 
