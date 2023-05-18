@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <libgen.h>
 
 #define MAX_COMMAND_LENGTH 1000
 
@@ -18,17 +19,15 @@ void shell(char *prog_name)
 	size_t len = 0;
 	ssize_t read;
 	pid_t child_pid;
-	int status, args_count = 0;
+	int status, args_count;
 
 	while (1)
 	{
-		printf("%s$", prog_name);
-		read = getline(&line, &len, stdin);
-		if (read == -1)
+		printf("%s$ ", prog_name);
+		if ((read = getline(&line, &len, stdin)) == -1)
 		{
 			if (feof(stdin))
 			{
-				printf("\nExiting %s...\n", prog_name);
 				break;
 			}
 			else
@@ -43,15 +42,13 @@ void shell(char *prog_name)
 		if (strcmp(line, "exit") == 0)
 			break;
 		token = strtok(line, " ");
-		while (token != NULL)
+		for (args_count = 0; token != NULL; args_count++)
 		{
 			args[args_count] = token;
-			args_count++;
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
-		child_pid = fork();
-		if (child_pid == -1)
+		if ((child_pid = fork()) == -1)
 		{
 			perror("fork");
 			exit(EXIT_FAILURE);
@@ -59,7 +56,7 @@ void shell(char *prog_name)
 		if (child_pid == 0)
 		{
 			execve(args[0], args, NULL);
-			perror("line");
+			perror("./hsh");
 			exit(EXIT_FAILURE);
 		}
 		else
@@ -78,9 +75,10 @@ void shell(char *prog_name)
  * Return: Always 0(success)
  */
 
-int main(int argc, char *argv[])
+int main(int __attribute__ ((unused)) argc, char *argv[])
 {
 	char *program_name = basename(argv[0]);
+
 	shell(program_name);
 	return (0);
 }
