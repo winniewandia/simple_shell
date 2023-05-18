@@ -7,46 +7,41 @@
 
 #define MAX_COMMAND_LENGTH 1000
 
-int main(void)
+/**
+ * shell - simple UNIX command interpretor
+ * @prog_name: Name of the program
+ */
+
+void shell(char *prog_name)
 {
-	char *line = NULL;
+	char *token, *args[MAX_COMMAND_LENGTH], *line = NULL;
 	size_t len = 0;
 	ssize_t read;
 	pid_t child_pid;
-	int status;
-	const char prompt[] = "#cisfun$ ";
-	char *token;
-	char *args[MAX_COMMAND_LENGTH];
-	int args_count = 0;
+	int status, args_count = 0;
 
 	while (1)
 	{
-		write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
+		printf("%s$", prog_name);
 		read = getline(&line, &len, stdin);
 		if (read == -1)
 		{
 			if (feof(stdin))
 			{
+				printf("\nExiting %s...\n", prog_name);
 				break;
 			}
 			else
 			{
-				perror("read error");
+				perror("getline");
 				exit(EXIT_FAILURE);
 			}
 		}
-		if (line[read - 1] == '\n')
-		{
-			line[read - 1] = '\0';
-			if (strcmp(line, "exit") == 0)
-			{
-				break;
-			}
-			else if (strcmp(line, "") == 0)
-			{
-				continue;
-			}
-		}
+		if (read == 1)
+			continue;
+		line[read - 1] = '\0';
+		if (strcmp(line, "exit") == 0)
+			break;
 		token = strtok(line, " ");
 		while (token != NULL)
 		{
@@ -55,18 +50,17 @@ int main(void)
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
-
 		child_pid = fork();
 		if (child_pid == -1)
 		{
-			perror("Error in fork");
-			return(1);
+			perror("fork");
+			exit(EXIT_FAILURE);
 		}
 		if (child_pid == 0)
 		{
 			execve(args[0], args, NULL);
-			perror("./hsh");
-			return(1);
+			perror("line");
+			exit(EXIT_FAILURE);
 		}
 		else
 		{
@@ -74,6 +68,20 @@ int main(void)
 		}
 	}
 	free(line);
+}
+
+/**
+ * main - runs the shell program
+ * @argc: Number of arguments
+ * @argv: Pointer to a string of arguments
+ *
+ * Return: Always 0(success)
+ */
+
+int main(int argc, char *argv[])
+{
+	char *program_name = basename(argv[0]);
+	shell(program_name);
 	return (0);
 }
 
