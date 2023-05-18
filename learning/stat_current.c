@@ -35,10 +35,6 @@ int main(int argc, char **argv)
 			{
 				printf("%s\n", filepath);
 			}
-			else
-			{
-				printf("%s: Not Found\n", filepath);
-			}
 		}
 		token = strtok(NULL, ":");
 	}
