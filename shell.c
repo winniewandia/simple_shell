@@ -5,8 +5,11 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <libgen.h>
+#include <stdbool.h>
 
 #define MAX_COMMAND_LENGTH 1000
+
+extern char **environ;
 
 /**
  * shell - simple UNIX command interpretor
@@ -50,6 +53,11 @@ void shell(FILE *input_file)
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
+		if (access(args[0], F_OK) == -1)
+		{
+			printf("1: %s: not found\n", args[0]);
+			continue;
+		}
 		child_pid = fork();
 		if (child_pid == -1)
 		{
@@ -58,7 +66,7 @@ void shell(FILE *input_file)
 		}
 		if (child_pid == 0)
 		{
-			execve(args[0], args, NULL);
+			execve(args[0], args, environ);
 			perror("./hsh");
 			exit(EXIT_FAILURE);
 		}
