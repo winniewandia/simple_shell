@@ -10,21 +10,21 @@
 
 /**
  * shell - simple UNIX command interpretor
- * @prog_name: Name of the program
  * @input_file: Input file to be read
  */
 
-void shell(char *prog_name, FILE *input_file)
+void shell(FILE *input_file)
 {
 	char *token, *args[MAX_COMMAND_LENGTH], *line = NULL;
 	size_t len = 0;
 	ssize_t read;
 	pid_t child_pid;
 	int status, args_count;
+	char prompt[] = "./hsh$ ";
 
 	while (1)
 	{
-		printf("%s$ ", prog_name);
+		write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 		read = getline(&line, &len, input_file);
 		if (read == -1)
 		{
@@ -84,12 +84,11 @@ void shell(char *prog_name, FILE *input_file)
 
 int main(int argc, char *argv[])
 {
-	char *prog_name = basename(argv[0]);
 	FILE *input_file;
 
 	if (argc == 1)
 	{
-		shell(prog_name, stdin);
+		shell(stdin);
 	}
 	else if (argc == 2)
 	{
@@ -99,12 +98,12 @@ int main(int argc, char *argv[])
 			perror("fopen");
 			exit(EXIT_FAILURE);
 		}
-		shell(prog_name, input_file);
+		shell(input_file);
 		fclose(input_file);
 	}
 	else
 	{
-		fprintf(stderr, "Usage: %s [file]\n", prog_name);
+		perror("./hsh");
 		exit(EXIT_FAILURE);
 	}
 	return (0);
