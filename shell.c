@@ -1,15 +1,9 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <string.h>
-#include <libgen.h>
-#include <stdbool.h>
-
-#define MAX_COMMAND_LENGTH 1000
+#include "shell.h"
 
 extern char **environ;
+char *args[MAX_COMMAND_LENGTH];
+char *line;
+int args_count;
 
 /**
  * shell - simple UNIX command interpretor
@@ -18,13 +12,13 @@ extern char **environ;
 
 void shell(FILE *input_file)
 {
-	char *token, *args[MAX_COMMAND_LENGTH], *line = NULL;
+	char *token, prompt[] = "./hsh$ ";
 	size_t len = 0;
 	ssize_t read;
 	pid_t child_pid;
-	int status, args_count;
-	char prompt[] = "./hsh$ ";
+	int status;
 
+	line = NULL;
 	while (1)
 	{
 		write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
@@ -44,8 +38,6 @@ void shell(FILE *input_file)
 		if (read == 1)
 			continue;
 		line[read - 1] = '\0';
-		if (strcmp(line, "exit") == 0)
-			break;
 		token = strtok(line, " ");
 		for (args_count = 0; token != NULL; args_count++)
 		{
@@ -53,6 +45,13 @@ void shell(FILE *input_file)
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
+		if (is_builtin(args[0]))
+		{
+			_cd();
+			_pwd();
+			my_exit();
+			continue;
+		}
 		if (access(args[0], F_OK) == -1)
 		{
 			printf("1: %s: not found\n", args[0]);
