@@ -1,10 +1,9 @@
 #include "shell.h"
 
-extern char **environ;
 char *args[MAX_COMMAND_LENGTH];
 char *line;
 int args_count;
-
+char *command;
 /**
  * shell - simple UNIX command interpretor
  * @input_file: Input file to be read
@@ -12,11 +11,9 @@ int args_count;
 
 void shell(FILE *input_file)
 {
-	char *token, prompt[] = "./hsh$ ";
+	char *token, *command_path, prompt[] = "./hsh$ ";
 	size_t len = 0;
 	ssize_t read;
-	pid_t child_pid;
-	int status;
 
 	line = NULL;
 	while (1)
@@ -42,10 +39,11 @@ void shell(FILE *input_file)
 		for (args_count = 0; token != NULL; args_count++)
 		{
 			args[args_count] = token;
+			command = args[0];
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
-		if (_strchr(args[0], '/') == NULL)
+		if (_strchr(command, '/') == NULL)
 		{
 			if (is_builtin(args[0]))
 			{
@@ -54,33 +52,19 @@ void shell(FILE *input_file)
 				my_exit();
 				continue;
 			}
-			if (access(args[0], X_OK) == -1)
+			command_path = is_executable(args[0]);
+			if (command_path == NULL)
 			{
-				printf("1: %s: not found\n", args[0]);
+				printf("%s: not found\n", args[0]);
 				continue;
 			}
+			command = command_path;
 		}
-		child_pid = fork();
-		if (child_pid == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (child_pid == 0)
-		{
-			execve(args[0], args, environ);
-			perror("./hsh");
-			exit(EXIT_FAILURE);
-		}
-		else
-		{
-			wait(&status);
-		}
+		child_pid();
 		if (input_file == stdin)
-		{
 			fflush(stdout);
-		}
 	}
+	free(command);
 	free(line);
 }
 
