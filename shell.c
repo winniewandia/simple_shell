@@ -45,17 +45,20 @@ void shell(FILE *input_file)
 			token = strtok(NULL, " ");
 		}
 		args[args_count] = NULL;
-		if (is_builtin(args[0]))
+		if (_strchr(args[0], '/') == NULL)
 		{
-			_cd();
-			_pwd();
-			my_exit();
-			continue;
-		}
-		if (access(args[0], F_OK) == -1)
-		{
-			printf("1: %s: not found\n", args[0]);
-			continue;
+			if (is_builtin(args[0]))
+			{
+				_cd();
+				_pwd();
+				my_exit();
+				continue;
+			}
+			if (access(args[0], X_OK) == -1)
+			{
+				printf("1: %s: not found\n", args[0]);
+				continue;
+			}
 		}
 		child_pid = fork();
 		if (child_pid == -1)

@@ -24,5 +24,6 @@ void _cd(void);
 void _pwd(void);
 void my_exit(void);
 bool is_builtin(const char *command);
+char *_strchr(char *s, char c);
 
 #endif
