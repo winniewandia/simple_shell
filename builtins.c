@@ -1,5 +1,6 @@
 #include "shell.h"
 
+extern char **environ;
 /**
  * _cd - executes cd builtin command
  */
@@ -65,4 +66,23 @@ void my_exit(void)
 		exit(EXIT_SUCCESS);
 	}
 }
+/**
+ * _env - executes env builtin command
+ */
+void _env(void)
+{
+	int i;
+
+	if (_strcmp(args[0], "env") == 0)
+	{
+		for (i = 0; environ[i] != NULL; i++)
+		{
+			write(STDOUT_FILENO, environ[i], sizeof(environ));
+			write(STDOUT_FILENO, "\n", 1);
+		}
+	}
+}
+
+
+
 

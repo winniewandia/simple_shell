@@ -32,5 +32,6 @@ char *create_path(const char *dir, char *command);
 char *is_executable(char *command);
 void child_pid(void);
 char *_strdup(char *str);
+void _env(void);
 
 #endif
