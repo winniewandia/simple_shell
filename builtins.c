@@ -1,6 +1,5 @@
 #include "shell.h"
 
-extern char **environ;
 /**
  * _cd - executes cd builtin command
  */
@@ -56,7 +55,7 @@ void _pwd(void)
 	}
 }
 /**
- * _exit - executes exit builtin command
+ * my_exit - executes exit builtin command
  */
 void my_exit(void)
 {
@@ -71,6 +70,7 @@ void my_exit(void)
  */
 void _env(void)
 {
+	extern char **environ;
 	int i;
 	size_t len;
 

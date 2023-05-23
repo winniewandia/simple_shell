@@ -10,7 +10,7 @@
 bool is_builtin(const char *command)
 {
 	const char *builtins[] = {"cd", "exit", "pwd", "echo", "env"};
-	long unsigned int i;
+	unsigned long int i;
 
 	for (i = 0; i < sizeof(builtins) / sizeof(builtins[0]); i++)
 	{

@@ -34,7 +34,6 @@ char *is_executable(char *command)
 						closedir(dirp);
 						return (fullpath);
 					}
-					free(fullpath);
 				}
 			}
 			closedir(dirp);
@@ -68,6 +67,5 @@ char *create_path(const char *dir, char *command)
 
 	snprintf(full_path, path_len, "%s/%s", dir, command);
 	return (full_path);
-	free(full_path);
 }
 

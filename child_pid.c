@@ -4,6 +4,7 @@ extern char **environ;
 
 /**
  * child_pid - creates a child process and runs execve
+ * @prog_name: Program name used to run the shell
  */
 
 void child_pid(char *prog_name)
