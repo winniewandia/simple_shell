@@ -50,6 +50,7 @@ void shell(FILE *input_file)
 				_cd();
 				_pwd();
 				my_exit();
+				_env();
 				continue;
 			}
 			command_path = is_executable(args[0]);

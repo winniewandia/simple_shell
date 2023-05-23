@@ -72,17 +72,16 @@ void my_exit(void)
 void _env(void)
 {
 	int i;
+	size_t len;
 
 	if (_strcmp(args[0], "env") == 0)
 	{
 		for (i = 0; environ[i] != NULL; i++)
 		{
-			write(STDOUT_FILENO, environ[i], sizeof(environ));
+			len = _strlen(environ[i]);
+			write(STDOUT_FILENO, environ[i], len);
 			write(STDOUT_FILENO, "\n", 1);
 		}
 	}
 }
-
-
-
 

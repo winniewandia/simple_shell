@@ -25,6 +25,7 @@ void shell(FILE *input_file);
 void _cd(void);
 void _pwd(void);
 void my_exit(void);
+void _env(void);
 bool is_builtin(const char *command);
 char *_strchr(char *s, char c);
 char *_strncpy(char *dest, char *src, int n);
@@ -32,6 +33,5 @@ char *create_path(const char *dir, char *command);
 char *is_executable(char *command);
 void child_pid(void);
 char *_strdup(char *str);
-void _env(void);
 
 #endif
