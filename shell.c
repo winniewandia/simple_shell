@@ -7,9 +7,10 @@ char *command;
 /**
  * shell - simple UNIX command interpretor
  * @input_file: Input file to be read
+ * @prog_name: Program name to be printed on error
  */
 
-void shell(FILE *input_file)
+void shell(char *prog_name, FILE *input_file)
 {
 	char *token, *command_path, prompt[] = "./hsh$ ";
 	size_t len = 0;
@@ -56,17 +57,15 @@ void shell(FILE *input_file)
 			command_path = is_executable(args[0]);
 			if (command_path == NULL)
 			{
-				printf("%s: not found\n", args[0]);
+				printf("%s: 1: %s: not found\n", prog_name, args[0]);
 				continue;
 			}
 			command = command_path;
 		}
-		child_pid();
+		child_pid(prog_name);
 		if (input_file == stdin)
 			fflush(stdout);
 	}
-	free(command);
-	free(line);
 }
 
 /**
@@ -80,10 +79,11 @@ void shell(FILE *input_file)
 int main(int argc, char *argv[])
 {
 	FILE *input_file;
+	char *prog_name = basename(argv[0]);
 
 	if (argc == 1)
 	{
-		shell(stdin);
+		shell(prog_name, stdin);
 	}
 	else if (argc == 2)
 	{
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 			perror("fopen");
 			exit(EXIT_FAILURE);
 		}
-		shell(input_file);
+		shell(prog_name, input_file);
 		fclose(input_file);
 	}
 	else
@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
 		perror("./hsh");
 		exit(EXIT_FAILURE);
 	}
+	free(line);
 	return (0);
 }
 

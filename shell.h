@@ -21,7 +21,7 @@ extern char *command;
 
 int _strlen(char *s);
 int _strcmp(char *s1, char *s2);
-void shell(FILE *input_file);
+void shell(char *prog_name, FILE *input_file);
 void _cd(void);
 void _pwd(void);
 void my_exit(void);
@@ -31,7 +31,8 @@ char *_strchr(char *s, char c);
 char *_strncpy(char *dest, char *src, int n);
 char *create_path(const char *dir, char *command);
 char *is_executable(char *command);
-void child_pid(void);
+void child_pid(char *prog_name);
 char *_strdup(char *str);
+const char* _basename(const char* path);
 
 #endif

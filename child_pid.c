@@ -6,14 +6,14 @@ extern char **environ;
  * child_pid - creates a child process and runs execve
  */
 
-void child_pid(void)
+void child_pid(char *prog_name)
 {
 	pid_t child_pid;
 	int status;
 
 	if (access(command, F_OK) == -1)
 	{
-		printf("1: %s: not found\n", args[0]);
+		printf("%s: 1: %s: not found\n", prog_name, args[0]);
 		return;
 	}
 	else
