@@ -109,7 +109,7 @@ void shell(char *prog_name, FILE *input_file)
 			command_path = is_executable(shell_data.command[0]);
 			if (command_path == NULL)
 			{
-				my_printf("%s: 1: %s: not found\n", prog_name, shell_data.command[0]);
+				my_printf("%s: No such file or directory", prog_name);
 				continue;
 			}
 			shell_data.cmd_path = command_path;

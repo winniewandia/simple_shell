@@ -30,7 +30,7 @@ void my_exit(shdata_t *shell_data)
 	if (_strcmp(shell_data->command[0], "exit") == 0)
 	{
 		free_shdata(shell_data);
-		exit(EXIT_SUCCESS);
+		return;
 	}
 }
 /**
