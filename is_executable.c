@@ -10,9 +10,10 @@
 
 char *is_executable(char *command)
 {
-	char *path, *fullpath, *path_token, *original_path;
+	char *path, *path_token, *original_path;
 	DIR *dirp;
 	struct dirent *entry;
+	char *fullpath = NULL;
 
 	path = getenv("PATH");
 	if (path == NULL)
@@ -39,8 +40,8 @@ char *is_executable(char *command)
 			closedir(dirp);
 		}
 		path_token = strtok(NULL, ":");
+		free(fullpath);
 	}
-	free(fullpath);
 	free(original_path);
 	return (NULL);
 }
