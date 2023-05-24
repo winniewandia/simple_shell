@@ -61,5 +61,7 @@ void tokenize(shdata_t *shell_data, unsigned int *old_cmd);
 void _free(void **ptr);
 char *_memcpy(char *dest, char *src, unsigned int n);
 void* _realloc(void* ptr, unsigned int old, unsigned int new_size);
+void builtin_exec(shdata_t *shell_data);
+void exec_check(shdata_t *shell_data, char *prog_name);
 
 #endif

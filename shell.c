@@ -3,6 +3,7 @@
 /**
  * start_shdata - initialize the shell data
  * @shell_data: Structure of the shell
+ * @env: Environment variables
  */
 void start_shdata(shdata_t *shell_data, char **env)
 {
@@ -26,6 +27,7 @@ void free_shdata(shdata_t *shell_data)
 /**
  * tokenize - tokenizes the user input
  * @shell_data: The data of the structure
+ * @old_cmd: Old command
  */
 
 void tokenize(shdata_t *shell_data, unsigned int *old_cmd)
@@ -70,13 +72,14 @@ void tokenize(shdata_t *shell_data, unsigned int *old_cmd)
  * shell - simple UNIX command interpretor
  * @input_file: Input file to be read
  * @prog_name: Program name to be printed on error
+ * @env: Environment variables
  */
 
 void shell(char *prog_name, FILE *input_file, char **env)
 {
 	unsigned int prev_cmd_size = 0;
 	shdata_t shell_data;
-	char *command_path, prompt[] = "$ ";
+	char prompt[] = "$ ";
 	size_t len = 0;
 
 	start_shdata(&shell_data, env);
@@ -98,22 +101,10 @@ void shell(char *prog_name, FILE *input_file, char **env)
 		tokenize(&shell_data, &prev_cmd_size);
 		if (shell_data.command == NULL || shell_data.command[0] == NULL)
 			continue;
-		if (is_builtin(shell_data.command[0]))
-		{
-			_pwd(&shell_data);
-			_env(&shell_data);
-			my_exit(&shell_data);
-			continue;
-		}
+		builtin_exec(&shell_data);
 		if (_strchr(shell_data.command[0], '/') == NULL)
 		{
-			command_path = is_executable(shell_data.command[0]);
-			if (command_path == NULL)
-			{
-				my_printf("%s: No such file or directory", prog_name);
-				continue;
-			}
-			shell_data.cmd_path = command_path;
+			exec_check(&shell_data, prog_name);
 		}
 		else
 		{
@@ -130,6 +121,7 @@ void shell(char *prog_name, FILE *input_file, char **env)
  * main - runs the shell program
  * @argc: Number of arguments
  * @argv: Pointer to a string of arguments
+ * @env: Environment variables
  *
  * Return: Always 0(success)
  */
