@@ -17,13 +17,13 @@ void _free(void **ptr)
  * _realloc - returns pointer to a new allocated block
  * @ptr: Pointer to be reallocated
  * @old: Old size
- * @new: New size
+ * @new_size: New size
  *
  * Return: Pointer to void
  */
-void* _realloc(void* ptr, unsigned int old, unsigned int new_size)
+void *_realloc(void *ptr, unsigned int old, unsigned int new_size)
 {
-	void* new_ptr;
+	void *new_ptr;
 	unsigned int copy_size;
 
 	if (old == new_size)

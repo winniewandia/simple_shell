@@ -1,10 +1,9 @@
 #include "shell.h"
 
-extern char **environ;
-
 /**
  * child_pid - creates a child process and runs execve
  * @prog_name: Program name used to run the shell
+ * @shell_data: The shell structure
  */
 
 void child_pid(char *prog_name, shdata_t *shell_data)
@@ -20,7 +19,7 @@ void child_pid(char *prog_name, shdata_t *shell_data)
 	}
 	else if (child_pid == 0)
 	{
-		execve(shell_data->cmd_path, shell_data->command, environ);
+		execve(shell_data->cmd_path, shell_data->command, shell_data->env);
 		perror("./hsh");
 		exit(EXIT_FAILURE);
 	}

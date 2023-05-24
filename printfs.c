@@ -32,7 +32,7 @@ int stderror_printf(FILE *stream, const char *str)
  * my_printf - prints chars to stdout
  * @format: Format specifiers
  */
-void my_printf(const char* format, ...)
+void my_printf(const char *format, ...)
 {
 	va_list args;
 	const char *prog_name, *arg, *str;
