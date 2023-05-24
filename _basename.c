@@ -7,9 +7,9 @@
  * Return: The filename in the path
  */
 
-const char *_basename(const char *path)
+char *_basename(char *path)
 {
-	const char *filename = path + _strlen((char *) path) - 1;
+	char *filename = path + _strlen(path) - 1;
 
 	while (filename > path && *filename != '\\' && *filename != '/')
 	{

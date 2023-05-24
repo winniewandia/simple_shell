@@ -57,7 +57,7 @@ void shell(char *prog_name, FILE *input_file)
 			command_path = is_executable(args[0]);
 			if (command_path == NULL)
 			{
-				printf("%s: 1: %s: not found\n", prog_name, args[0]);
+				my_printf("%s: 1: %s: not found\n", prog_name, args[0]);
 				continue;
 			}
 			command = command_path;
@@ -79,7 +79,7 @@ void shell(char *prog_name, FILE *input_file)
 int main(int argc, char *argv[])
 {
 	FILE *input_file;
-	char *prog_name = basename(argv[0]);
+	char *prog_name = _basename(argv[0]);
 
 	if (argc == 1)
 	{

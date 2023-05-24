@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <limits.h>
 #include <dirent.h>
+#include <stdarg.h>
 
 #define MAX_COMMAND_LENGTH 1000
 
@@ -33,6 +34,9 @@ char *create_path(const char *dir, char *command);
 char *is_executable(char *command);
 void child_pid(char *prog_name);
 char *_strdup(char *str);
-const char* _basename(const char* path);
-
+char* _basename(char* path);
+int stderror_printf(FILE *stream, const char *str);
+char *_strncat(char *dest, char *src, int n);
+int _putchar(char c);
+void my_printf(const char* format, ...);
 #endif

@@ -14,7 +14,7 @@ void child_pid(char *prog_name)
 
 	if (access(command, F_OK) == -1)
 	{
-		printf("%s: 1: %s: not found\n", prog_name, args[0]);
+		my_printf("%s: 1: %s: not found\n", prog_name, args[0]);
 		return;
 	}
 	else

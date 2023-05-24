@@ -40,6 +40,7 @@ char *is_executable(char *command)
 		}
 		path_token = strtok(NULL, ":");
 	}
+	free(fullpath);
 	free(original_path);
 	return (NULL);
 }
@@ -54,18 +55,11 @@ char *is_executable(char *command)
  */
 char *create_path(const char *dir, char *command)
 {
-	size_t dir_len = _strlen((char *)dir);
-	size_t command_len = _strlen(command);
-	size_t path_len = dir_len + command_len + 2;
-	char *full_path = malloc(path_len);
+	char full_path[MAX_COMMAND_LENGTH];
 
-	if (full_path == NULL)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-
-	snprintf(full_path, path_len, "%s/%s", dir, command);
-	return (full_path);
+	_strncpy(full_path, (char *)dir, sizeof(full_path));
+	_strncat(full_path, "/", sizeof(full_path) - _strlen(full_path) - 1);
+	_strncat(full_path, command, sizeof(full_path) - strlen(full_path) - 1);
+	return (_strdup(full_path));
 }
 

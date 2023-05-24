@@ -29,7 +29,7 @@ void _cd(void)
 			}
 			else
 			{
-				fprintf(stderr, "cd: No home directory found\n");
+				stderror_printf(stderr, "cd: No home directory found\n");
 			}
 		}
 	}
