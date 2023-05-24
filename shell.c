@@ -12,7 +12,7 @@ char *command;
 
 void shell(char *prog_name, FILE *input_file)
 {
-	char *token, *command_path, prompt[] = "./hsh$ ";
+	char *token, *command_path, prompt[] = "$ ";
 	size_t len = 0;
 	ssize_t read;
 
@@ -66,6 +66,7 @@ void shell(char *prog_name, FILE *input_file)
 		if (input_file == stdin)
 			fflush(stdout);
 	}
+	free(line);
 }
 
 /**
