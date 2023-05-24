@@ -18,6 +18,7 @@ void builtin_exec(shdata_t *shell_data)
 /**
  * exec_check - executes the executables
  * @shell_data: Data structure for shell
+ * @prog_name: Program name
  */
 
 void exec_check(shdata_t *shell_data, char *prog_name)
