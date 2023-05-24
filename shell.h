@@ -23,6 +23,7 @@
  * @interactive_mode: Checks if it's interactive mode
  * @line_number: Number of lines
  * @command: Command typed by user
+ * @env: The environment variables
  * @cmd_path: Path to the executable
  */
 
@@ -32,23 +33,13 @@ typedef struct shdata
 	int interactive_mode;
 	unsigned int line_number;
 	char **command;
+	char **env;
 	char *cmd_path;
 } shdata_t;
 
-/**
- * builtin - holds the builtin commands
- * @name: Name passed by user
- * @fxn: Function to be executed
- */
-typedef struct builtin
-{
-	char *name;
-	void (*fxn)(shdata_t *shell_data);
-} built_t;
-
 int _strlen(char *s);
 int _strcmp(char *s1, char *s2);
-void shell(char *prog_name, FILE *input_file);
+void shell(char *prog_name, FILE *input_file, char **env);
 void _pwd(shdata_t *shell_data);
 void my_exit(shdata_t *shell_data);
 void _env(shdata_t *shell_data);
@@ -64,7 +55,7 @@ int stderror_printf(FILE *stream, const char *str);
 char *_strncat(char *dest, char *src, int n);
 int _putchar(char c);
 void my_printf(const char* format, ...);
-void start_shdata(shdata_t *shell_data);
+void start_shdata(shdata_t *shell_data, char **env);
 void free_shdata(shdata_t *shell_data);
 void tokenize(shdata_t *shell_data, unsigned int *old_cmd);
 void _free(void **ptr);

@@ -4,13 +4,14 @@
  * start_shdata - initialize the shell data
  * @shell_data: Structure of the shell
  */
-void start_shdata(shdata_t *shell_data)
+void start_shdata(shdata_t *shell_data, char **env)
 {
 	shell_data->user_input = NULL;
 	shell_data->interactive_mode = isatty(STDIN_FILENO);
 	shell_data->line_number = 0;
 	shell_data->command = NULL;
 	shell_data->cmd_path = NULL;
+	shell_data->env = env;
 }
 
 /**
@@ -71,14 +72,14 @@ void tokenize(shdata_t *shell_data, unsigned int *old_cmd)
  * @prog_name: Program name to be printed on error
  */
 
-void shell(char *prog_name, FILE *input_file)
+void shell(char *prog_name, FILE *input_file, char **env)
 {
 	unsigned int prev_cmd_size = 0;
 	shdata_t shell_data;
 	char *command_path, prompt[] = "$ ";
 	size_t len = 0;
 
-	start_shdata(&shell_data);
+	start_shdata(&shell_data, env);
 	while (1)
 	{
 		shell_data.line_number++;
@@ -102,7 +103,7 @@ void shell(char *prog_name, FILE *input_file)
 			_pwd(&shell_data);
 			_env(&shell_data);
 			my_exit(&shell_data);
-			return;
+			continue;
 		}
 		if (_strchr(shell_data.command[0], '/') == NULL)
 		{
@@ -133,14 +134,14 @@ void shell(char *prog_name, FILE *input_file)
  * Return: Always 0(success)
  */
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char **env)
 {
 	FILE *input_file;
 	char *prog_name = _basename(argv[0]);
 
 	if (argc == 1)
 	{
-		shell(prog_name, stdin);
+		shell(prog_name, stdin, env);
 	}
 	else if (argc == 2)
 	{
@@ -150,7 +151,7 @@ int main(int argc, char *argv[])
 			perror("fopen");
 			exit(EXIT_FAILURE);
 		}
-		shell(prog_name, input_file);
+		shell(prog_name, input_file, env);
 		fclose(input_file);
 	}
 	else
