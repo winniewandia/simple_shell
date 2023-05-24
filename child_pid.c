@@ -7,33 +7,33 @@ extern char **environ;
  * @prog_name: Program name used to run the shell
  */
 
-void child_pid(char *prog_name)
+void child_pid(char *prog_name, shdata_t *shell_data)
 {
 	pid_t child_pid;
 	int status;
 
-	if (access(command, F_OK) == -1)
+	child_pid = fork();
+	if (child_pid == -1)
 	{
-		my_printf("%s: 1: %s: not found\n", prog_name, args[0]);
-		return;
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	else if (child_pid == 0)
+	{
+		execve(shell_data->cmd_path, shell_data->command, environ);
+		perror("./hsh");
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		child_pid = fork();
-		if (child_pid == -1)
+		wait(&status);
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
 		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (child_pid == 0)
-		{
-			execve(command, args, environ);
-			perror("./hsh");
-			exit(EXIT_FAILURE);
+			fflush(stdout);
 		}
 		else
 		{
-			wait(&status);
+			my_printf("%s: %s: command not found\n", prog_name, shell_data->command);
 		}
 	}
 }

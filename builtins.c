@@ -1,47 +1,14 @@
 #include "shell.h"
 
 /**
- * _cd - executes cd builtin command
- */
-
-void _cd(void)
-{
-	const char *home_dir;
-
-	if (_strcmp(args[0], "cd") == 0)
-	{
-		if (args_count > 1)
-		{
-			if (chdir(args[1]) != 0)
-			{
-				perror("cd");
-			}
-		}
-		else
-		{
-			home_dir = getenv("HOME");
-			if (home_dir != NULL)
-			{
-				if (chdir(home_dir) != 0)
-				{
-					perror("cd");
-				}
-			}
-			else
-			{
-				stderror_printf(stderr, "cd: No home directory found\n");
-			}
-		}
-	}
-}
-/**
  * _pwd - executes pwd builtin command
+ * @shell_data: Shell's data structure
  */
-void _pwd(void)
+void _pwd(shdata_t *shell_data)
 {
 	char cwd[PATH_MAX];
 
-	if (_strcmp(args[0], "pwd") == 0)
+	if (_strcmp(shell_data->command[0], "pwd") == 0)
 	{
 		if (getcwd(cwd, sizeof(cwd)) != NULL)
 		{
@@ -56,25 +23,27 @@ void _pwd(void)
 }
 /**
  * my_exit - executes exit builtin command
+ * @shell_data: Shell's data structure
  */
-void my_exit(void)
+void my_exit(shdata_t *shell_data)
 {
-	if (_strcmp(args[0], "exit") == 0)
+	if (_strcmp(shell_data->command[0], "exit") == 0)
 	{
-		free(line);
+		free_shdata(shell_data);
 		exit(EXIT_SUCCESS);
 	}
 }
 /**
  * _env - executes env builtin command
+ * @shell_data: Shell's data structure
  */
-void _env(void)
+void _env(shdata_t *shell_data)
 {
 	extern char **environ;
 	int i;
 	size_t len;
 
-	if (_strcmp(args[0], "env") == 0)
+	if (_strcmp(shell_data->command[0], "env") == 0)
 	{
 		for (i = 0; environ[i] != NULL; i++)
 		{
