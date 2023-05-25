@@ -9,7 +9,6 @@ void builtin_exec(shdata_t *shell_data)
 {
 	if (is_builtin(shell_data->command[0]))
 	{
-		_pwd(shell_data);
 		_env(shell_data);
 		my_exit(shell_data);
 	}
@@ -31,7 +30,6 @@ void exec_check(shdata_t *shell_data, char *prog_name)
 		if (command_path == NULL)
 		{
 			my_printf("%s: No such file or directory\n", prog_name);
-			free(shell_data->cmd_path);
 			return;
 		}
 		else
@@ -46,8 +44,7 @@ void exec_check(shdata_t *shell_data, char *prog_name)
 	if (access(shell_data->cmd_path, F_OK) != 0 || shell_data->cmd_path == NULL)
 	{
 		my_printf("%s: 1: %s: command not found\n", prog_name, shell_data->command);
-		_free((void **)&shell_data->cmd_path);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	else
 	{

@@ -1,27 +1,6 @@
 #include "shell.h"
 
 /**
- * _pwd - executes pwd builtin command
- * @shell_data: Shell's data structure
- */
-void _pwd(shdata_t *shell_data)
-{
-	char cwd[PATH_MAX];
-
-	if (_strcmp(shell_data->command[0], "pwd") == 0)
-	{
-		if (getcwd(cwd, sizeof(cwd)) != NULL)
-		{
-			write(STDOUT_FILENO, cwd, _strlen(cwd));
-			write(STDOUT_FILENO, "\n", 1);
-		}
-		else
-		{
-			perror("getcwd");
-		}
-	}
-}
-/**
  * my_exit - executes exit builtin command
  * @shell_data: Shell's data structure
  */

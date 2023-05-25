@@ -40,7 +40,6 @@ typedef struct shdata
 int _strlen(char *s);
 int _strcmp(char *s1, char *s2);
 void shell(char *prog_name, FILE *input_file, char **env);
-void _pwd(shdata_t *shell_data);
 void my_exit(shdata_t *shell_data);
 void _env(shdata_t *shell_data);
 bool is_builtin(char *command);

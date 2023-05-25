@@ -23,6 +23,7 @@ void free_shdata(shdata_t *shell_data)
 {
 	_free((void **)&shell_data->user_input);
 	_free((void **)&shell_data->command);
+	_free((void **)&shell_data->cmd_path);
 }
 
 /**
@@ -105,7 +106,6 @@ void shell(char *prog_name, FILE *input_file, char **env)
 		builtin_exec(&shell_data);
 		exec_check(&shell_data, prog_name);
 	}
-	_free((void **)&shell_data.cmd_path);
 	free_shdata(&shell_data);
 }
 
