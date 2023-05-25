@@ -48,7 +48,7 @@ char *_strchr(char *s, char c);
 char *_strncpy(char *dest, char *src, int n);
 char *create_path(const char *dir, char *command);
 char *is_executable(char *command);
-void child_pid(char *prog_name, shdata_t *shell_data);
+void child_pid(shdata_t *shell_data);
 char *_strdup(char *str);
 char *_basename(char *path);
 int stderror_printf(FILE *stream, const char *str);

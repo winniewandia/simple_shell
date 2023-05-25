@@ -39,8 +39,8 @@ char *is_executable(char *command)
 			}
 			closedir(dirp);
 		}
-		path_token = strtok(NULL, ":");
 		free(fullpath);
+		path_token = strtok(NULL, ":");
 	}
 	free(original_path);
 	return (NULL);

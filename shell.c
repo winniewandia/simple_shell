@@ -104,8 +104,8 @@ void shell(char *prog_name, FILE *input_file, char **env)
 			continue;
 		builtin_exec(&shell_data);
 		exec_check(&shell_data, prog_name);
-		_free((void **)&shell_data.cmd_path);
 	}
+	_free((void **)&shell_data.cmd_path);
 	free_shdata(&shell_data);
 }
 

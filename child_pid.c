@@ -34,7 +34,10 @@ void exec_check(shdata_t *shell_data, char *prog_name)
 			free(shell_data->cmd_path);
 			return;
 		}
-		shell_data->cmd_path = command_path;
+		else
+		{
+			shell_data->cmd_path = command_path;
+		}
 	}
 	else
 	{
@@ -42,13 +45,13 @@ void exec_check(shdata_t *shell_data, char *prog_name)
 	}
 	if (access(shell_data->cmd_path, F_OK) != 0 || shell_data->cmd_path == NULL)
 	{
-		my_printf("%s: 1: %s: not found\n", prog_name, shell_data->cmd_path);
+		my_printf("%s: 1: %s: command not found\n", prog_name, shell_data->command);
 		_free((void **)&shell_data->cmd_path);
-		return;
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		child_pid(prog_name, shell_data);
+		child_pid(shell_data);
 	}
 }
 
@@ -58,7 +61,7 @@ void exec_check(shdata_t *shell_data, char *prog_name)
  * @shell_data: The shell structure
  */
 
-void child_pid(char *prog_name, shdata_t *shell_data)
+void child_pid(shdata_t *shell_data)
 {
 	pid_t child_pid;
 	int status;
@@ -72,20 +75,12 @@ void child_pid(char *prog_name, shdata_t *shell_data)
 	else if (child_pid == 0)
 	{
 		execve(shell_data->cmd_path, shell_data->command, shell_data->env);
-		perror("./hsh");
+		perror(shell_data->cmd_path);
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		wait(&status);
-		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-		{
-			fflush(stdout);
-		}
-		else
-		{
-			my_printf("%s: %s: command not found\n", prog_name, shell_data->command);
-		}
 	}
 }
 
