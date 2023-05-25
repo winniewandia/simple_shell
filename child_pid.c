@@ -25,14 +25,31 @@ void exec_check(shdata_t *shell_data, char *prog_name)
 {
 	char *command_path;
 
-	command_path = is_executable(shell_data->command[0]);
-	if (command_path == NULL)
+	if (_strchr(shell_data->command[0], '/') == NULL)
 	{
-		my_printf("%s: No such file or directory\n", prog_name);
-		free(shell_data->cmd_path);
+		command_path = is_executable(shell_data->command[0]);
+		if (command_path == NULL)
+		{
+			my_printf("%s: No such file or directory\n", prog_name);
+			free(shell_data->cmd_path);
+			return;
+		}
+		shell_data->cmd_path = command_path;
+	}
+	else
+	{
+		shell_data->cmd_path = shell_data->command[0];
+	}
+	if (access(shell_data->cmd_path, F_OK) != 0 || shell_data->cmd_path == NULL)
+	{
+		my_printf("%s: 1: %s: not found\n", prog_name, shell_data->cmd_path);
+		_free((void **)&shell_data->cmd_path);
 		return;
 	}
-	shell_data->cmd_path = command_path;
+	else
+	{
+		child_pid(prog_name, shell_data);
+	}
 }
 
 /**
@@ -46,8 +63,6 @@ void child_pid(char *prog_name, shdata_t *shell_data)
 	pid_t child_pid;
 	int status;
 
-	if (access(shell_data->cmd_path, F_OK) != 0)
-		return;
 	child_pid = fork();
 	if (child_pid == -1)
 	{

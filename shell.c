@@ -22,6 +22,7 @@ void start_shdata(shdata_t *shell_data, char **env)
 void free_shdata(shdata_t *shell_data)
 {
 	_free((void **)&shell_data->user_input);
+	_free((void **)&shell_data->command);
 }
 
 /**
@@ -102,17 +103,8 @@ void shell(char *prog_name, FILE *input_file, char **env)
 		if (shell_data.command == NULL || shell_data.command[0] == NULL)
 			continue;
 		builtin_exec(&shell_data);
-		if (_strchr(shell_data.command[0], '/') == NULL)
-		{
-			exec_check(&shell_data, prog_name);
-		}
-		else
-		{
-			shell_data.cmd_path = shell_data.command[0];
-		}
-		child_pid(prog_name, &shell_data);
-		if (input_file == stdin)
-			fflush(stdout);
+		exec_check(&shell_data, prog_name);
+		_free((void **)&shell_data.cmd_path);
 	}
 	free_shdata(&shell_data);
 }
