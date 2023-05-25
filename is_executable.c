@@ -10,7 +10,7 @@
 
 char *is_executable(char *command)
 {
-	char *path, *path_token, *original_path, *result = NULL;
+	char *path, *path_token, *original_path;
 	DIR *dirp;
 	struct dirent *entry;
 	char *fullpath = NULL;
@@ -32,10 +32,10 @@ char *is_executable(char *command)
 					fullpath = create_path(path_token, command);
 					if (access(fullpath, X_OK) == 0)
 					{
-						result = _strdup(fullpath);
 						closedir(dirp);
 						dirp = NULL;
-						break;
+						free(original_path);
+						return (fullpath);
 					}
 				}
 			}
@@ -43,12 +43,10 @@ char *is_executable(char *command)
 				closedir(dirp);
 		}
 		free(fullpath);
-		if (result != NULL)
-			break;
 		path_token = strtok(NULL, ":");
 	}
 	free(original_path);
-	return (result);
+	return (NULL);
 }
 
 /**
