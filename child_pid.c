@@ -57,7 +57,6 @@ void exec_check(shdata_t *shell_data, char *prog_name)
 
 /**
  * child_pid - creates a child process and runs execve
- * @prog_name: Program name used to run the shell
  * @shell_data: The shell structure
  */
 
