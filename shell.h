@@ -39,28 +39,28 @@ typedef struct shdata
 
 int _strlen(char *s);
 int _strcmp(char *s1, char *s2);
-void shell(char *prog_name, FILE *input_file, char **env);
+int shell(char *prog_name, FILE *input_file, char **env);
 void my_exit(shdata_t *shell_data);
 void _env(shdata_t *shell_data);
 bool is_builtin(char *command);
 char *_strchr(char *s, char c);
 char *_strncpy(char *dest, char *src, int n);
-char *create_path(const char *dir, char *command);
-char *is_executable(char *command);
-void child_pid(shdata_t *shell_data);
+void is_executable(shdata_t *shell_data, char **full_path, int *flag);
+int child_pid(shdata_t *shell_data, char *path);
 char *_strdup(char *str);
 char *_basename(char *path);
 int stderror_printf(FILE *stream, const char *str);
 char *_strncat(char *dest, char *src, int n);
 int _putchar(char c);
 void my_printf(const char *format, ...);
-void start_shdata(shdata_t *shell_data, char **env);
+shdata_t *create_shdata(char **env);
 void free_shdata(shdata_t *shell_data);
 void tokenize(shdata_t *shell_data, unsigned int *old_cmd);
 void _free(void **ptr);
 char *_memcpy(char *dest, char *src, unsigned int n);
 void *_realloc(void *ptr, unsigned int old, unsigned int new_size);
-void builtin_exec(shdata_t *shell_data);
-void exec_check(shdata_t *shell_data, char *prog_name);
+int exec_check(shdata_t *shell_data, char *prog_name);
+char *_strcpy(char *dest, char *src);
+char *_strcat(char *dest, char *src);
 
 #endif

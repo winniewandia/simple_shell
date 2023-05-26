@@ -3,67 +3,49 @@
 /**
  * is_executable - checks if a command can
  * be found in the PATH
- * @command: Command to be checked
- *
- * Return: Fullpath if successful and NULL otherwise
+ * @shell_data: Structure of the shell
+ * @full_path: Fullpath for the command
+ * @flag: Checks if fullpath is found
  */
 
-char *is_executable(char *command)
+void is_executable(shdata_t *shell_data, char **full_path, int *flag)
 {
-	char *path, *path_token, *original_path;
-	DIR *dirp;
-	struct dirent *entry;
-	char *fullpath = NULL;
+	char *path, *path_token, *original_path, *copy;
+	unsigned int current = 0, previous = 0;
 
 	path = getenv("PATH");
 	if (path == NULL)
-		return (NULL);
+		return;
 	original_path = _strdup(path);
+	if (original_path == NULL)
+	{
+		perror("strdup");
+		return;
+	}
 	path_token = strtok(original_path, ":");
 	while (path_token != NULL)
 	{
-		dirp = opendir(path_token);
-		if (dirp != NULL)
+		current = (_strlen(shell_data->command[0]) +
+				strlen(path_token) + 2) * sizeof(char);
+		copy = _realloc(*full_path, previous, current);
+		if (copy == NULL)
 		{
-			while ((entry = readdir(dirp)) != NULL)
-			{
-				if (_strcmp(entry->d_name, command) == 0)
-				{
-					fullpath = create_path(path_token, command);
-					if (access(fullpath, X_OK) == 0)
-					{
-						closedir(dirp);
-						dirp = NULL;
-						free(original_path);
-						return (fullpath);
-					}
-				}
-			}
-			if (dirp != NULL)
-				closedir(dirp);
+			perror("realloc");
+			_free((void **)&original_path);
+			return;
 		}
-		free(fullpath);
+		*full_path = copy;
+		_strcpy(*full_path, path_token);
+		_strcat(*full_path, "/");
+		_strcat(*full_path, shell_data->command[0]);
+		if (access(*full_path, X_OK) == 0)
+		{
+			*flag = 1;
+			break;
+		}
+		previous = current;
 		path_token = strtok(NULL, ":");
 	}
-	free(original_path);
-	return (NULL);
-}
-
-/**
- * create_path - create a full path by concatenating directory
- * and command
- * @dir: Directory
- * @command: Command
- *
- * Return: Full path
- */
-char *create_path(const char *dir, char *command)
-{
-	char full_path[MAX_COMMAND_LENGTH];
-
-	_strncpy(full_path, (char *)dir, sizeof(full_path));
-	_strncat(full_path, "/", sizeof(full_path) - _strlen(full_path) - 1);
-	_strncat(full_path, command, sizeof(full_path) - strlen(full_path) - 1);
-	return (_strdup(full_path));
+	_free((void **)&original_path);
 }
 

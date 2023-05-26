@@ -1,18 +1,27 @@
 #include "shell.h"
 
 /**
- * start_shdata - initialize the shell data
- * @shell_data: Structure of the shell
+ * create_shdata - initialize the shell data
  * @env: Environment variables
+ *
+ * Return: Shell structure
  */
-void start_shdata(shdata_t *shell_data, char **env)
+shdata_t *create_shdata(char **env)
 {
+	shdata_t *shell_data = malloc(sizeof(shdata_t));
+
+	if (shell_data == NULL)
+	{
+		perror("malloc");
+		return (NULL);
+	}
 	shell_data->user_input = NULL;
 	shell_data->interactive_mode = isatty(STDIN_FILENO);
 	shell_data->line_number = 0;
 	shell_data->command = NULL;
 	shell_data->cmd_path = NULL;
 	shell_data->env = env;
+	return (shell_data);
 }
 
 /**
@@ -23,7 +32,7 @@ void free_shdata(shdata_t *shell_data)
 {
 	_free((void **)&shell_data->user_input);
 	_free((void **)&shell_data->command);
-	_free((void **)&shell_data->cmd_path);
+	free(shell_data);
 }
 
 /**
@@ -75,38 +84,46 @@ void tokenize(shdata_t *shell_data, unsigned int *old_cmd)
  * @input_file: Input file to be read
  * @prog_name: Program name to be printed on error
  * @env: Environment variables
+ *
+ * Return: 1 if success and NULL otherwise
  */
 
-void shell(char *prog_name, FILE *input_file, char **env)
+int shell(char *prog_name, FILE *input_file, char **env)
 {
 	unsigned int prev_cmd_size = 0;
-	shdata_t shell_data;
+	shdata_t *shell_data;
 	char prompt[] = "$ ";
 	size_t len = 0;
+	int value = 0;
 
-	start_shdata(&shell_data, env);
+	shell_data = create_shdata(env);
+	if (shell_data == NULL)
+	{
+		perror("shell data");
+		return (-1);
+	}
 	while (1)
 	{
-		shell_data.line_number++;
-		if (shell_data.interactive_mode)
+		shell_data->line_number++;
+		if (shell_data->interactive_mode)
 		{
 			write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 		}
 		errno = 0;
-		if (getline(&shell_data.user_input, &len, input_file) == -1)
+		if (getline(&shell_data->user_input, &len, input_file) == -1)
 		{
-			if (errno == 0 || (errno == ENOTTY && !shell_data.interactive_mode))
+			if (errno == 0 || (errno == ENOTTY && !shell_data->interactive_mode))
 				break;
 			perror("getline");
 			continue;
 		}
-		tokenize(&shell_data, &prev_cmd_size);
-		if (shell_data.command == NULL || shell_data.command[0] == NULL)
+		tokenize(shell_data, &prev_cmd_size);
+		if (shell_data->command == NULL || shell_data->command[0] == NULL)
 			continue;
-		builtin_exec(&shell_data);
-		exec_check(&shell_data, prog_name);
+		value = exec_check(shell_data, prog_name);
 	}
-	free_shdata(&shell_data);
+	free_shdata(shell_data);
+	return (value);
 }
 
 /**
@@ -122,10 +139,11 @@ int main(int argc, char *argv[], char **env)
 {
 	FILE *input_file;
 	char *prog_name = _basename(argv[0]);
+	int value = 0;
 
 	if (argc == 1)
 	{
-		shell(prog_name, stdin, env);
+		value = shell(prog_name, stdin, env);
 	}
 	else if (argc == 2)
 	{
@@ -135,7 +153,7 @@ int main(int argc, char *argv[], char **env)
 			perror("fopen");
 			exit(EXIT_FAILURE);
 		}
-		shell(prog_name, input_file, env);
+		value = shell(prog_name, input_file, env);
 		fclose(input_file);
 	}
 	else
@@ -143,6 +161,6 @@ int main(int argc, char *argv[], char **env)
 		perror("./hsh");
 		exit(EXIT_FAILURE);
 	}
-	return (0);
+	return (value);
 }
 
